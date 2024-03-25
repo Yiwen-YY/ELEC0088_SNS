@@ -11,6 +11,7 @@ def main():
         message = input("Enter message to send (or 'exit' to quit): ")
         if message.lower() == "exit":
             break
+            
         client_socket.send(message.encode())
 
         response = client_socket.recv(1024)
