@@ -1,14 +1,21 @@
 import socket
 import threading
 import pandas as pd
+from datetime import date, timedelta
+import re
 
 def handle_client(client_socket, address):
     print(f"[+] Accepted connection from {address}")
 
-    tavg_forecast = pd.read_csv("tavg_forecast.csv")
+    tmin_forecast = pd.read_csv("tmin_forecast.csv")
+    tmax_forecast = pd.read_csv("tmax_forecast.csv")
     
     while True:
         data = client_socket.recv(1024).decode()
+        today = date.today()
+
+        pattern = r'\d{4}-\d{1,2}-\d{1,2}'
+        match = re.search(pattern, data)
 
         if not data:
             break
@@ -17,11 +24,19 @@ def handle_client(client_socket, address):
         if "hello" in data:
             response = "Hello! I'm the Oracle, your smart robot. :D"
         elif "today" in data:
-            response = "Today is 2021-12-31."
+            response = f"Today is {today}."
         elif "temperature" in data:
             if "tomorrow" in data:
-                tavg = tavg_forecast[tavg_forecast['date'] == '2022-01-01']['tavg'].values[0]
-                response = f"The average temperature of tomorrow is {tavg}"
+                tomorrow = today + timedelta(days=1)
+                tomorrow = tomorrow.strftime("%Y-%m-%d")
+                tmin = tmin_forecast[tmin_forecast['date'] == tomorrow]['tmin'].values[0]
+                tmax = tmax_forecast[tmax_forecast['date'] == tomorrow]['tmax'].values[0]
+                response = "The minimum temperature of tomorrow is " + "{:.1f}".format(tmin) + ", the maximum temperature of tomorrow is " + "{:.1f}".format(tmax) + "."
+            if match:
+                date_str = match.group()
+                tmin = tmin_forecast[tmin_forecast['date'] == date_str]['tmin'].values[0]
+                tmax = tmax_forecast[tmax_forecast['date'] == date_str]['tmax'].values[0]
+                response = "The minimum temperature of " + date_str + " is " + "{:.1f}".format(tmin) + ", the maximum temperature of " + date_str + " is " + "{:.1f}".format(tmax) + "."
         else:
             response = "Sorry, I can't understand ;_;"
 
