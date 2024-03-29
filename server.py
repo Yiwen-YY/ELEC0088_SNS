@@ -31,12 +31,14 @@ def handle_client(client_socket, address):
                 tomorrow = tomorrow.strftime("%Y-%m-%d")
                 tmin = tmin_forecast[tmin_forecast['date'] == tomorrow]['tmin'].values[0]
                 tmax = tmax_forecast[tmax_forecast['date'] == tomorrow]['tmax'].values[0]
-                response = "The minimum temperature of tomorrow is " + "{:.1f}".format(tmin) + ", the maximum temperature of tomorrow is " + "{:.1f}".format(tmax) + "."
+                response = "The minimum temperature of tomorrow is " + "{:.1f}".format(tmin) + ...
+                ", the maximum temperature of tomorrow is " + "{:.1f}".format(tmax) + "."
             if match:
                 date_str = match.group()
                 tmin = tmin_forecast[tmin_forecast['date'] == date_str]['tmin'].values[0]
                 tmax = tmax_forecast[tmax_forecast['date'] == date_str]['tmax'].values[0]
-                response = "The minimum temperature of " + date_str + " is " + "{:.1f}".format(tmin) + ", the maximum temperature of " + date_str + " is " + "{:.1f}".format(tmax) + "."
+                response = "The minimum temperature of " + date_str + " is " + "{:.1f}".format(tmin) + ...
+                ", the maximum temperature of " + date_str + " is " + "{:.1f}".format(tmax) + "."
         else:
             response = "Sorry, I can't understand ;_;"
 
